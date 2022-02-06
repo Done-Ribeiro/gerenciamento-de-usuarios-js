@@ -8,6 +8,7 @@ class UserController {
 
     this.onSubmit();
     this.onEdit();
+    this.selectAll();
 
   }
 
@@ -111,6 +112,10 @@ class UserController {
       this.getPhoto(this.formEl).then(
         (content) => {
           values.photo = content;
+
+          // metodo para inserir no sessionStorage
+          this.insert(values);
+
           this.addLine(values);
 
           this.formEl.reset();
@@ -206,9 +211,57 @@ class UserController {
 
   }
 
+  getUsersStorage() {
+
+    let users = [];
+
+    // verifica se tem usuarios cadastrados
+    if (sessionStorage.getItem("users")) {
+      users = JSON.parse(sessionStorage.getItem("users"));
+    }
+
+    return users;
+
+  }
+
+  selectAll() {
+
+    let users = this.getUsersStorage();
+
+    users.forEach(dataUser => {
+
+      let user = new User();
+
+      /**
+       * recebemos um dataUser .. (problema dos atb virem com um _ antes)
+       * agora precisamos transformar este JSON em uma instancia de um User()
+       * ai criamos um metodo que fara isso.
+       */
+      user.loadFromJSON(dataUser);
+
+      this.addLine(user);
+
+    });
+
+  }
+
+  insert(data) {
+
+    let users = this.getUsersStorage();
+    users.push(data);
+
+    /**
+     * depois de add um array de usuarios
+     * serializamos e passamos por string para o sessionStorage
+     */
+    sessionStorage.setItem("users", JSON.stringify(users));
+
+  }
+
   addLine(dataUser) {
 
     let tr = document.createElement("tr");
+
     /**
      * criando DATASET user
      * *  so que neste momento nosso DATASET eh um objeto
