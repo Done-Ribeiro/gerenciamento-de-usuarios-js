@@ -113,7 +113,7 @@ class UserController {
         (content) => {
           values.photo = content;
 
-          // metodo para inserir no sessionStorage
+          // metodo para inserir no localStorage
           this.insert(values);
 
           this.addLine(values);
@@ -216,8 +216,8 @@ class UserController {
     let users = [];
 
     // verifica se tem usuarios cadastrados
-    if (sessionStorage.getItem("users")) {
-      users = JSON.parse(sessionStorage.getItem("users"));
+    if (localStorage.getItem("users")) {
+      users = JSON.parse(localStorage.getItem("users"));
     }
 
     return users;
@@ -252,9 +252,9 @@ class UserController {
 
     /**
      * depois de add um array de usuarios
-     * serializamos e passamos por string para o sessionStorage
+     * serializamos e passamos por string para o localStorage
      */
-    sessionStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("users", JSON.stringify(users));
 
   }
 
