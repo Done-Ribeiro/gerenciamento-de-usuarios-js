@@ -63,6 +63,10 @@ class UserController {
           // precisamos passar a instancia do obj User()
           let user = new User();
           user.loadFromJSON(result);
+
+          // save editar usuario
+          user.save();
+
           // EDITAR: sobrescrevendo tr ja existente
           this.getTr(user, tr);
 
@@ -70,9 +74,9 @@ class UserController {
 
           this.formUpdateEl.reset();
 
-          btn.disabled = false;
-
           this.showPanelCreate();
+
+          btn.disabled = false;
 
         },
         (error) => {
@@ -103,8 +107,8 @@ class UserController {
         (content) => {
           values.photo = content;
 
-          // metodo para inserir no localStorage
-          this.insert(values);
+          // save novo usuario
+          values.save();
 
           this.addLine(values);
 
@@ -163,11 +167,12 @@ class UserController {
        * validando campos
        * é o campo que estou procurando && ele esta vazio
       */
-      // if (['name', 'email', 'password'].indexOf(field.name) > -1 && !field.value) {
-      //   field.parentElement.classList.add('has-error');
-      //   isValid = false;
-      //   return false;
-      // }
+      if (['name', 'email', 'password'].indexOf(field.name) > -1 && !field.value) {
+
+        field.parentElement.classList.add('has-error');
+        isValid = false;
+
+      }
 
       if (field.name == "gender") {
         if (field.checked) {
@@ -232,19 +237,6 @@ class UserController {
       this.addLine(user);
 
     });
-
-  }
-
-  insert(data) {
-
-    let users = this.getUsersStorage();
-    users.push(data);
-
-    /**
-     * depois de add um array de usuarios
-     * serializamos e passamos por string para o localStorage
-     */
-    localStorage.setItem("users", JSON.stringify(users));
 
   }
 
@@ -362,7 +354,7 @@ class UserController {
 
   updateCount() {
 
-    let numberUser = 0;
+    let numberUsers = 0;
     let numberAdmin = 0;
 
     /**
@@ -373,7 +365,7 @@ class UserController {
     [...this.tableEl.children].forEach(tr => {
 
       // usuarios
-      numberUser++;
+      numberUsers++;
 
       // administradores
       let user = JSON.parse(tr.dataset.user);
@@ -381,7 +373,7 @@ class UserController {
 
     });
 
-    document.querySelector("#number-users").innerHTML = numberUser;
+    document.querySelector("#number-users").innerHTML = numberUsers;
     document.querySelector("#number-users-admin").innerHTML = numberAdmin;
 
   }
